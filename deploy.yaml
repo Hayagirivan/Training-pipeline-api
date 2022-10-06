@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: training-pipeline-api
+  labels:
+    app: training-pipeline-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: training-pipeline-api
+  template:
+    metadata:
+      labels:
+        app: training-pipeline-api
+    spec:
+      volumes:
+      - name: cloud-secret-key
+        secret:
+          secretName: microsercredfile
+      containers:
+      - image: gcr.io/sentient-207310/training-pipeline-api:v0.1.0
+        name: pipeline-api
+        volumeMounts:
+        - name: cloud-secret-key
+          mountPath: /var/secrets
+        env:
+        - name: CLUSTER_NAME
+          value: sentient-ambassador-gpu
+        - name: CLUSTER_ZONE
+          value: asia-southeast1-b
+        - name: PROJECT_ID
+          value: sentient-207310
+        - name: MICRO_DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: microsercred
+              key: dbhost
+        - name: MICRO_DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: microsercred
+              key: dbuser
+        - name: MICRO_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: microsercred
+              key: dbpass
+        - name: MICRO_DB_DATABASE
+          value: sentient_dev
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/lib/ambassador/secrets/sentient-bq-dev.json
+        ports:
+        - name: http
+          containerPort: 5000
+          protocol: TCP

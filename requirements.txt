@@ -1,0 +1,6 @@
+kubernetes==24.2.0
+PyMySQL==1.0.2
+fastapi==0.75.1
+lambda-config==0.0.10
+logger-config==0.3
+uvicorn==0.17.6
