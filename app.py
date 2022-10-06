@@ -114,12 +114,7 @@ async def main(request:Request):
             status_code = 406
             return JSONResponse(status_code=status_code, content=rtn_msg)
 
-        # Rescource requested for the Function code
-
-        # msdetails_querry = "SELECT `VERSION`, `RESULT_TYPE`, `MEMORY`, `CPU`, `GPU`, `GPU_TYPE` FROM sentient_dev.function_training where FUN_CODE=%s and STATUS='A';"
-        # msdetails_querry = "SELECT * FROM sentient_dev.function_training where FUN_CODE=%s and STATUS='A';"
         msdetails_querry = "SELECT ft.* FROM function_training ft,function f where ft.STATUS='A' and ft.FUN_ID=f.ID and f.CODE=%s"
-        # msdetails_querry = " INSERT INTO sentient_dev.function_training (`FUN_ID`,`FUN_CODE`,`VERSION`,`ENDPOINT`,`MEMORY`,`CPU`,`GPU`,`GPU_TYPE`,`STATUS`,`DEL_MARK`,`DATE_CREATED`,`DATE_UPDATED`,`CREATED_BY`,`UPDATED_BY`) VALUES (1,'TRAIN_ASR','v1.0.0','https://www.sentient.io',1,1,1,null,'A','N','2022-01-01 00:00:00','2022-01-01 00:00:00',2,2); "
 
         conn = sql_conn()
         cursor = conn.cursor()
