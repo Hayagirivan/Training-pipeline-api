@@ -130,7 +130,7 @@ async def main(request:Request):
             req_mem = int(ms_detail["MEMORY"])
             req_gpu = int(ms_detail["GPU"])
             topic_id = ms_detail["TOPIC_ID"]
-            func_code = ms_detail["FUN_CODE"]
+            func_code = ms_detail["MODEL_FUN_CODE"]
             version = ms_detail["VERSION"]
             gpu_type = ms_detail["GPU_TYPE"]
             
@@ -190,7 +190,7 @@ async def check_model(request:Request):
         logger.info(req_json)
         rtn_msg = {}
         
-        if 'x-api-key' not in req_json or 'fun_code' not in req_json  or 'path' not in req_json:
+        if 'x-api-key' not in req_json or 'fun_code' not in req_json:
             
             rtn_msg["status"] = "Failure"
             rtn_msg["message"] = "Input Field Missing"
@@ -216,12 +216,13 @@ async def check_model(request:Request):
         
 
         fun_code = req_json["fun_code"]
-        path = req_json["path"]
+        # path = req_json["path"]
 
-        selectQuery = "SELECT fm.* FROM function_trained_model fm ,function f WHERE fm.STATUS='A' and fm.USER_ID=%s and fm.FUN_ID=f.ID and f.CODE='%s' and  fm.ENDPOINT='%s'"
+        selectQuery = "SELECT fm.* FROM function_trained_model fm ,function f WHERE fm.STATUS='A' and fm.USER_ID=%s and fm.FUN_ID=f.ID and f.CODE='%s'"
+
         conn = sql_conn()
         cursor = conn.cursor()
-        cursor.execute(selectQuery%(user_id,fun_code,path))
+        cursor.execute(selectQuery%(user_id,fun_code))
         result = cursor.fetchall()
 
         logger.info(result)
